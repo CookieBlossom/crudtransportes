@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: crudtransportes
+    ports:
+      - "8080:80"
+    volumes:
+    - ./public:/var/www/html
+    - ./src:/var/www/html/src
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: transportesdb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: transportes
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: usuario_password
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./transportes.sql:/docker-entrypoint-initdb.d/transportes.sql
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge
